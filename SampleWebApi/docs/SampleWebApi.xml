@@ -1,0 +1,222 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SampleWebApi</name>
+    </assembly>
+    <members>
+        <member name="T:SampleWebApi.Controllers.ValuesController">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:SampleWebApi.Controllers.ValuesController.#ctor(SampleWebApi.Database.Context)">
+            <summary>
+            
+            </summary>
+            <param name="context"></param>
+        </member>
+        <member name="M:SampleWebApi.Controllers.ValuesController.GetValueItems">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SampleWebApi.Controllers.ValuesController.GetValueItem(System.Int64)">
+            <summary>
+            
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SampleWebApi.Controllers.ValuesController.PostValueItem(SampleModel.ValueItem)">
+            <summary>
+            
+            </summary>
+            <param name="item"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SampleWebApi.Controllers.ValuesController.PutValueItem(System.Int64,SampleModel.ValueItem)">
+            <summary>
+            
+            </summary>
+            <param name="id"></param>
+            <param name="item"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SampleWebApi.Controllers.ValuesController.DeleteValueItem(System.Int64)">
+            <summary>
+            
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SampleWebApi.Database.Context">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:SampleWebApi.Database.Context.#ctor(Microsoft.EntityFrameworkCore.DbContextOptions{SampleWebApi.Database.Context})">
+            <summary>
+            
+            </summary>
+            <param name="options"></param>
+        </member>
+        <member name="P:SampleWebApi.Database.Context.Values">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:SampleWebApi.Extensions.ExceptionHandler">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:SampleWebApi.Extensions.ExceptionHandler.ConfigureExceptionHandler(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+            <summary>
+            
+            </summary>
+            <param name="app"></param>
+        </member>
+        <member name="T:SampleWebApi.Extensions.Formatters.Json">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:SampleWebApi.Extensions.Formatters.Json.ConfigureJson(Microsoft.Extensions.DependencyInjection.IMvcBuilder)">
+            <summary>
+            
+            </summary>
+            <param name="setupAction"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SampleWebApi.Extensions.Formatters.MessagePack">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:SampleWebApi.Extensions.Formatters.MessagePack.ConfigureMessagePack(Microsoft.Extensions.DependencyInjection.IMvcBuilder)">
+            <summary>
+            
+            </summary>
+            <param name="setupAction"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SampleWebApi.Extensions.Formatters.Protobuf">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:SampleWebApi.Extensions.Formatters.Protobuf.ConfigureProtobuf(Microsoft.Extensions.DependencyInjection.IMvcBuilder)">
+            <summary>
+            
+            </summary>
+            <param name="setupAction"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SampleWebApi.Extensions.Formatters.Xml">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:SampleWebApi.Extensions.Formatters.Xml.ConfigureXml(Microsoft.Extensions.DependencyInjection.IMvcBuilder)">
+            <summary>
+            
+            </summary>
+            <param name="setupAction"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SampleWebApi.Extensions.Hsts">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:SampleWebApi.Extensions.Hsts.ConfigureHsts(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            
+            </summary>
+            <param name="services"></param>
+        </member>
+        <member name="T:SampleWebApi.Extensions.HttpsRedirection">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:SampleWebApi.Extensions.HttpsRedirection.ConfigureHttpsRedirection(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.AspNetCore.Hosting.IHostingEnvironment)">
+            <summary>
+            
+            </summary>
+            <param name="services"></param>
+            <param name="env"></param>
+        </member>
+        <member name="T:SampleWebApi.Extensions.Swagger">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:SampleWebApi.Extensions.Swagger.ConfigureSwaggerServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            
+            </summary>
+            <param name="services"></param>
+        </member>
+        <member name="M:SampleWebApi.Extensions.Swagger.ConfigureSwagger(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+            <summary>
+            
+            </summary>
+            <param name="app"></param>
+        </member>
+        <member name="T:SampleWebApi.Program">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:SampleWebApi.Program.Main(System.String[])">
+             <summary>
+            
+             </summary>
+             <param name="args"></param>
+        </member>
+        <member name="M:SampleWebApi.Program.CreateWebHostBuilder(System.String[])">
+            <summary>
+            
+            </summary>
+            <param name="args"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SampleWebApi.Startup">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:SampleWebApi.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Hosting.IHostingEnvironment)">
+            <summary>
+            
+            </summary>
+            <param name="configuration"></param>
+            <param name="env"></param>
+        </member>
+        <member name="P:SampleWebApi.Startup.Configuration">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SampleWebApi.Startup.Env">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:SampleWebApi.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            
+            </summary>
+            <param name="services"></param>
+        </member>
+        <member name="M:SampleWebApi.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IHostingEnvironment)">
+            <summary>
+            
+            </summary>
+            <param name="app"></param>
+            <param name="env"></param>
+        </member>
+    </members>
+</doc>
