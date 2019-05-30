@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -17,11 +18,25 @@ namespace ProtobufApiConsumer
 
         static async Task Main(string[] args)
         {
+            var sw = Stopwatch.StartNew();
+
+            Console.WriteLine("Posting data to server...");
+
             var result = await PostStreamDataToServerAsync();
+
+            Console.WriteLine("Done! Elapsed time: {0}.", sw.Elapsed);
+
+            Console.WriteLine();
+
+            Console.WriteLine("Reading data from server...");
 
             foreach (var item in await CallServerAsync())
                 Console.WriteLine($"Id: {item.Id}, IsComplete: {item.IsComplete}, Name: {item.Name}");
 
+            Console.WriteLine("Done! Elapsed time: {0}.", sw.Elapsed);
+
+            Console.WriteLine();
+            Console.WriteLine("Press any key to finish.");
             Console.ReadKey();
         }
 
