@@ -7,8 +7,12 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
+using IdentityModel.Client;
+using Newtonsoft.Json.Linq;
+
 namespace ProtobufApiConsumer
 {
+    
     using SampleModel;
 
     class Program
@@ -18,11 +22,53 @@ namespace ProtobufApiConsumer
 
         static async Task Main(string[] args)
         {
+            var disco = await new HttpClient().GetDiscoveryDocumentAsync("http://localhost:5000");
+            if (disco.IsError)
+            {
+                Console.WriteLine(disco.Error);
+                return;
+            }
+
+            // request token
+            var tokenResponse = await new HttpClient().RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
+            {
+                Address = disco.TokenEndpoint,
+
+                ClientId = "client",
+                ClientSecret = "secret",
+                Scope = "api1"
+            });
+
+            if (tokenResponse.IsError)
+            {
+                Console.WriteLine(tokenResponse.Error);
+                return;
+            }
+
+            Console.WriteLine(tokenResponse.Json);
+            Console.WriteLine();
+            Console.WriteLine();
+
+            // call api
+            var client = new HttpClient();
+            client.SetBearerToken(tokenResponse.AccessToken);
+
+            var response = await client.GetAsync("https://localhost:44316/identity");
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine(response.StatusCode);
+            }
+            else
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                Console.WriteLine(JArray.Parse(content));
+            }
+
             var sw = Stopwatch.StartNew();
 
             Console.WriteLine("Posting data to server...");
 
-            var result = await PostStreamDataToServerAsync();
+            var result = await PostStreamDataToServerAsync(client);
 
             Console.WriteLine("Done! Elapsed time: {0}.", sw.Elapsed);
 
@@ -30,7 +76,7 @@ namespace ProtobufApiConsumer
 
             Console.WriteLine("Reading data from server...");
 
-            foreach (var item in await CallServerAsync())
+            foreach (var item in await CallServerAsync(client))
                 Console.WriteLine($"Id: {item.Id}, IsComplete: {item.IsComplete}, Name: {item.Name}");
 
             Console.WriteLine("Done! Elapsed time: {0}.", sw.Elapsed);
@@ -40,21 +86,18 @@ namespace ProtobufApiConsumer
             Console.ReadKey();
         }
 
-        static async Task<List<ValueItem>> CallServerAsync()
+        static async Task<List<ValueItem>> CallServerAsync(HttpClient httpClient)
         {
-            var client = new HttpClient();
-
             var request = new HttpRequestMessage(HttpMethod.Get, ProtobufApiUrl);
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(ProtobufHeader));
 
-            var result = await client.SendAsync(request);
+            var result = await httpClient.SendAsync(request);
             return ProtoBuf.Serializer.Deserialize<List<ValueItem>>(await result.Content.ReadAsStreamAsync());
         }
 
-        static async Task<ValueItem> PostStreamDataToServerAsync()
+        static async Task<ValueItem> PostStreamDataToServerAsync(HttpClient httpClient)
         {
-            var client = new HttpClient();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(ProtobufHeader));
+            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(ProtobufHeader));
 
             var request = new HttpRequestMessage(HttpMethod.Post, ProtobufApiUrl);
 
@@ -63,13 +106,13 @@ namespace ProtobufApiConsumer
             {
                 Id = RandomNumber(),
                 IsComplete = RandomBoolean(),
-                Name = RandomString(100),
+                Name = RandomString(100)
             });
 
             request.Content = new ByteArrayContent(stream.ToArray());
             request.Content.Headers.ContentType = new MediaTypeHeaderValue(ProtobufHeader);
 
-            var responseForPost = await client.SendAsync(request);
+            var responseForPost = await httpClient.SendAsync(request);
             return ProtoBuf.Serializer.Deserialize<ValueItem>(await responseForPost.Content.ReadAsStreamAsync());
         }
 
