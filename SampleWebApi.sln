@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleModel", "SampleModel\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessagePackApiConsumer", "MessagePackApiConsumer\MessagePackApiConsumer.csproj", "{5D79F24E-BE2D-4277-B899-B7978E162820}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleAuthServer", "SampleAuthServer\SampleAuthServer.csproj", "{CE63915C-5BAF-48FF-A246-330BF3784BB4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{5D79F24E-BE2D-4277-B899-B7978E162820}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D79F24E-BE2D-4277-B899-B7978E162820}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D79F24E-BE2D-4277-B899-B7978E162820}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE63915C-5BAF-48FF-A246-330BF3784BB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE63915C-5BAF-48FF-A246-330BF3784BB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE63915C-5BAF-48FF-A246-330BF3784BB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE63915C-5BAF-48FF-A246-330BF3784BB4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
