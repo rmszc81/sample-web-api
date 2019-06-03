@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 using MessagePack;
+using IdentityModel.Client;
+using Newtonsoft.Json.Linq;
 
 namespace MessagePackApiConsumer
 {
@@ -20,11 +22,53 @@ namespace MessagePackApiConsumer
 
         static async Task Main(string[] args)
         {
+            var disco = await new HttpClient().GetDiscoveryDocumentAsync("http://localhost:5000");
+            if (disco.IsError)
+            {
+                Console.WriteLine(disco.Error);
+                return;
+            }
+
+            // request token
+            var tokenResponse = await new HttpClient().RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
+            {
+                Address = disco.TokenEndpoint,
+
+                ClientId = "client",
+                ClientSecret = "secret",
+                Scope = "api1"
+            });
+
+            if (tokenResponse.IsError)
+            {
+                Console.WriteLine(tokenResponse.Error);
+                return;
+            }
+
+            Console.WriteLine(tokenResponse.Json);
+            Console.WriteLine();
+            Console.WriteLine();
+
+            // call api
+            var client = new HttpClient();
+            client.SetBearerToken(tokenResponse.AccessToken);
+
+            var response = await client.GetAsync("https://localhost:44316/identity");
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine(response.StatusCode);
+            }
+            else
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                Console.WriteLine(JArray.Parse(content));
+            }
+
             var sw = Stopwatch.StartNew();
 
             Console.WriteLine("Posting data to server...");
 
-            var result = await PostStreamDataToServerAsync();
+            var result = await PostStreamDataToServerAsync(client);
 
             Console.WriteLine("Done! Elapsed time: {0}.", sw.Elapsed);
 
@@ -32,7 +76,7 @@ namespace MessagePackApiConsumer
 
             Console.WriteLine("Reading data from server...");
 
-            foreach (var item in await CallServerAsync())
+            foreach (var item in await CallServerAsync(client))
                 Console.WriteLine($"Id: {item.Id}, IsComplete: {item.IsComplete}, Name: {item.Name}");
 
             Console.WriteLine("Done! Elapsed time: {0}.", sw.Elapsed);
@@ -42,21 +86,18 @@ namespace MessagePackApiConsumer
             Console.ReadKey();
         }
 
-        static async Task<List<ValueItem>> CallServerAsync()
+        static async Task<List<ValueItem>> CallServerAsync(HttpClient httpClient)
         {
-            var client = new HttpClient();
-
             var request = new HttpRequestMessage(HttpMethod.Get, MessagePackApiUrl);
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MessagePackHeader));
 
-            var result = await client.SendAsync(request);
+            var result = await httpClient.SendAsync(request);
             return MessagePackSerializer.Deserialize<List<ValueItem>>(await result.Content.ReadAsStreamAsync());
         }
 
-        static async Task<ValueItem> PostStreamDataToServerAsync()
+        static async Task<ValueItem> PostStreamDataToServerAsync(HttpClient httpClient)
         {
-            var client = new HttpClient();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MessagePackHeader));
+            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MessagePackHeader));
 
             var request = new HttpRequestMessage(HttpMethod.Post, MessagePackApiUrl);
 
@@ -65,13 +106,13 @@ namespace MessagePackApiConsumer
             {
                Id = RandomNumber(),
                IsComplete = RandomBoolean(),
-               Name = RandomString(100),
+               Name = RandomString(100)
             });
 
             request.Content = new ByteArrayContent(stream.ToArray());
             request.Content.Headers.ContentType = new MediaTypeHeaderValue(MessagePackHeader);
 
-            var responseForPost = await client.SendAsync(request);
+            var responseForPost = await httpClient.SendAsync(request);
             return MessagePackSerializer.Deserialize<ValueItem>(await responseForPost.Content.ReadAsStreamAsync());
         }
 

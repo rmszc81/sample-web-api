@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="IdentityModel" Version="3.10.10" />
     <PackageReference Include="WebApiContrib.Core.Formatter.MessagePack" Version="2.1.0" />
   </ItemGroup>
 
