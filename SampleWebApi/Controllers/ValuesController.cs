@@ -9,6 +9,7 @@ namespace SampleWebApi.Controllers
 {
     using Database;
     using SampleModel;
+    using Helpers;
 
     /// <summary>
     /// 
@@ -23,17 +24,20 @@ namespace SampleWebApi.Controllers
         /// 
         /// </summary>
         /// <param name="context"></param>
-        public ValuesController(Context context)
+        /// <param name="diInterface"></param>
+        public ValuesController(Context context, IInterface diInterface)
         {
             _context = context;
 
-            if (_context.Values.Any())
-                return;
+            if (!_context.Values.Any())
+            {
+                _context.Values.Add(new ValueItem { Name = diInterface.Method() });
+                _context.Values.Add(new ValueItem { Name = "Item1" });
+                _context.Values.Add(new ValueItem { Name = "Item2" });
+                _context.Values.Add(new ValueItem { Name = "Item3" });
+                _context.SaveChanges();
 
-            _context.Values.Add(new ValueItem { Name = "Item1" });
-            _context.Values.Add(new ValueItem { Name = "Item2" });
-            _context.Values.Add(new ValueItem { Name = "Item3" });
-            _context.SaveChanges();
+            }
         }
 
         /// <summary>

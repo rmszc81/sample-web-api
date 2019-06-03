@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 
 namespace SampleWebApi
 {
@@ -19,6 +24,11 @@ namespace SampleWebApi
     {
         private const string ExceptionRoute = "/error";
         private const string DatabaseName = "Values";
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public IContainer ApplicationContainer { get; private set; }
 
         /// <summary>
         /// 
@@ -45,11 +55,12 @@ namespace SampleWebApi
         /// 
         /// </summary>
         /// <param name="services"></param>
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<Database.Context>(opt => opt.UseInMemoryDatabase(DatabaseName));
 
             services.AddMvc()
+                    .AddControllersAsServices() // mandatory for DI on controllers //
                     .ConfigureXml()
                     .ConfigureJson()
                     .ConfigureMessagePack()
@@ -59,6 +70,10 @@ namespace SampleWebApi
             services.ConfigureHsts();
             services.ConfigureHttpsRedirection(Env);
             services.ConfigureSwaggerServices();
+
+            this.ApplicationContainer = new Extensions.Autofac.Container(services).Kernel;
+
+            return new AutofacServiceProvider(this.ApplicationContainer);
         }
 
         /// <summary>
