@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -13,14 +14,14 @@ namespace SampleWebApi.Controllers
     using Database;
     using SampleModel;
     using Helpers;
-    
 
     /// <summary>
     /// 
     /// </summary>
     [Route("api/values")]
     [ApiController]
-    public class ValuesController : ControllerBase
+    [Authorize]
+    public class ValuesController : Controller
     {
         private readonly Context _context;
         private ILogger<ValuesController> _logger;

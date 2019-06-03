@@ -67,6 +67,18 @@ namespace SampleWebApi
                     .ConfigureProtobuf()
                     .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+            services.AddMvcCore()
+                    .AddAuthorization()
+                    .AddJsonFormatters();
+
+            services.AddAuthentication("Bearer")
+                    .AddIdentityServerAuthentication(options =>
+                    {
+                        options.Authority = "http://localhost:5000";
+                        options.RequireHttpsMetadata = false;
+                        options.ApiName = "api1";
+                    });
+
             services.ConfigureHsts();
             services.ConfigureHttpsRedirection(Env);
             services.ConfigureSwaggerServices();
@@ -92,6 +104,7 @@ namespace SampleWebApi
             }
 
             app.UseHttpsRedirection();
+            app.UseAuthentication();
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseHttpsRedirection();
