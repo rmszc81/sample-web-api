@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -16,23 +14,26 @@ namespace SampleAuthServer.Configurations
         {
             try
             {
-                var inputUserName = context.UserName;
-                var inputPassword = context.Password;
-
-                if (inputUserName.ToLowerInvariant().Equals("username") || inputPassword.ToLowerInvariant().Equals("password"))
+                await Task.Run(() =>
                 {
-                    var userId = Guid.NewGuid().ToString();
+                    var inputUserName = context.UserName;
+                    var inputPassword = context.Password;
 
-                    context.Result = new GrantValidationResult(
-                        subject: Guid.NewGuid().ToString(),
-                        authenticationMethod: "custom",
-                        claims: GetUserClaims(userId, context.UserName, "other user info here"));
+                    if (inputUserName.ToLowerInvariant().Equals("username") || inputPassword.ToLowerInvariant().Equals("password"))
+                    {
+                        var userId = Guid.NewGuid().ToString();
 
+                        context.Result = new GrantValidationResult(
+                            subject: Guid.NewGuid().ToString(),
+                            authenticationMethod: "custom",
+                            claims: GetUserClaims(userId, context.UserName, "other user info here"));
+
+                        return;
+                    }
+
+                    context.Result = new GrantValidationResult(TokenRequestErrors.InvalidGrant, "Incorrect user name or password.");
                     return;
-                }
-
-                context.Result = new GrantValidationResult(TokenRequestErrors.InvalidGrant, "Incorrect user name or password.");
-                return;
+                });
             }
             catch
             {
