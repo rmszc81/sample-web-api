@@ -29,15 +29,50 @@ namespace MessagePackApiConsumer
                 return;
             }
 
-            // request token
-            var tokenResponse = await new HttpClient().RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
-            {
-                Address = disco.TokenEndpoint,
+            TokenResponse tokenResponse = null;
 
-                ClientId = "client",
-                ClientSecret = "secret",
-                Scope = "api1"
-            });
+            Console.WriteLine("Choose the authentication type:");
+            Console.WriteLine("1: user name and password.");
+            Console.WriteLine("2: client id/secret only.");
+            Console.WriteLine();
+            var option = Console.ReadKey();
+
+            Console.WriteLine();
+
+            if (option.KeyChar == (char)'1')
+            {
+                // request token by username and password
+                tokenResponse = await new HttpClient().RequestPasswordTokenAsync(new PasswordTokenRequest
+                {
+                    Address = disco.TokenEndpoint,
+
+                    ClientId = "client",
+                    ClientSecret = "secret",
+                    UserName = "admin",
+                    Password = "password",
+                    Scope = "api1"
+                });
+            }
+            else if (option.KeyChar == (char)'2')
+            {
+                // request token by client id/secret
+                tokenResponse = await new HttpClient().RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
+                {
+                    Address = disco.TokenEndpoint,
+
+                    ClientId = "client",
+                    ClientSecret = "secret",
+                    Scope = "api1"
+                });
+            }
+            else
+            {
+                Console.WriteLine("Wrong option selected. Aborting.");
+                Console.WriteLine("Press any key to finish.");
+                Console.ReadKey();
+
+                return;
+            }
 
             if (tokenResponse.IsError)
             {
